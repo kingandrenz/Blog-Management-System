@@ -13,6 +13,9 @@ mongoose.connect(dbURI);
 
 
 // middleware
+// Use express.urlencoded middleware to handle URL-encoded form data instead of using body-parser
+app.use(express.urlencoded({ extended: true }));
+
 app.use(isBlog.isBlog);
 // for admin routes
 app.use('/', admin_route);
