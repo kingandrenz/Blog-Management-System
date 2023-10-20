@@ -20,23 +20,24 @@ const blogSetupSave = async (req, res) => {
         if (user) {
             res.redirect('/login');
         } else {
-            res.render('blogSetup', { message: 'Blog not setup properly!' }});
+            res.render('blogSetup', { message: 'Blog not setup properly!' });
         }
 
     } catch (err) {
         console.log(err.message);
     }
 }
+
 const login = async (req, res) => {
 
     res.send('Blog One');
 }
 
 
-/* const blogSetup = async (req, res) => {
+const blogSetup = async (req, res) => {
     try {
         const blogSettings = await blogSetting.find({});
-        if (blogSettings.length === 0) {
+        if (blogSettings.length > 0) {
             res.render('blogSetup');
         } else {
             res.redirect('/blogs');
@@ -46,11 +47,20 @@ const login = async (req, res) => {
         console.log(err.message);
     }
 }
- */
+
+const dashboard = async (req, res) => {
+    try {
+        res.render('dashboard');
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+ 
 
 module.exports = {
     login,
-    blogSetupSave
-    blogSetup
+    blogSetupSave,
+    blogSetup,
+    dashboard
 }
 

@@ -1,5 +1,5 @@
 const express = require('express');
-const admin_route = express.Router(); // Use express.Router() to create a router
+const admin_route = express(); // Use express.Router() to create a router
 const multer = require('multer');
 const path = require('path');
 
@@ -25,9 +25,10 @@ const storage = multer.diskStorage({
 
 const upload = multer({ storage: storage });
 
-admin_route.get('/', admin_controller.login);
-admin_route.get('/blogs', admin_controller.blogTwo);
+admin_route.get('/login', admin_controller.login);
+//admin_route.get('/blogs', admin_controller.blogTwo);
 admin_route.get('/blog-setup', admin_controller.blogSetup);
 admin_route.post('/blog-setup', upload.single('blog_logo'), admin_controller.blogSetupSave);
+admin_route.get('/dashboard', admin_controller.dashboard);
 
 module.exports = admin_route;

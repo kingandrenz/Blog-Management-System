@@ -45,6 +45,17 @@
             </form>
         </div>
 
+        <% 
+        if (typeof message !== 'undefined') {
+            %>
+            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                <strong style="color: red;"><%= message %></strong>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+            <%
+        }
+        %>
+
         <%- include('../partials/footer.ejs') %>
     </body>
 </html>

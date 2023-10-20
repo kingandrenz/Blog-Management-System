@@ -24,7 +24,7 @@ const userSchema =  mongoose.Schema({
     }
 })
 
-UserSchema.pre('save', function (next) {
+userSchema.pre('save', function (next) {
     const user = this; // 'this' refers to the current user being saved
     if (!user.isModified('password')) {
         // If the password field hasn't changed, we don't need to rehash it
@@ -40,7 +40,7 @@ UserSchema.pre('save', function (next) {
     });
 });
 // Add a method to the user schema to compare passwords
-UserSchema.methods.comparePassword = function (candidatePassword) {
+userSchema.methods.comparePassword = function (candidatePassword) {
     const user = this;
     return new Promise((resolve, reject) => {
         // Use bcrypt.compare to compare the candidate password to the user's password
