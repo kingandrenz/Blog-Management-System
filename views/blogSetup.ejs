@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
-    <%- include('../partials/head.ejs') %>
+    <%- include('./partials/header.ejs') %>
     <body>
-        <%- include('../partials/nav.ejs') %>
+        <%- include('./partials/nav.ejs') %>
 
         <div class="container">
             <h1>Blog Setup</h1>
@@ -12,14 +12,14 @@
                         <input type="text" name="blog_title" class="form-control" placeholder="Enter title" required>
                     </div>
                 </div>
-                <div class="row-mt-3">
+                <div class="row mt-3">
                     <div class="col-sm-20">
                         <input type="file" name="blog_logo" class="form-control" required>
                     </div>
                 </div>
-                <div class="row-mt-3">
+                <div class="row mt-3">
                     <div class="col-sm-20">
-                        <textarea name="description" class="form-control" placeholder="Enter Description" required></textarea>
+                        <textarea name="blog_description" class="form-control" placeholder="Enter blog Description" required></textarea>
                     </div>
                 </div>
                 <div class="row mt-3">
@@ -56,6 +56,6 @@
         }
         %>
 
-        <%- include('../partials/footer.ejs') %>
+        <%- include('./partials/footer.ejs') %>
     </body>
 </html>

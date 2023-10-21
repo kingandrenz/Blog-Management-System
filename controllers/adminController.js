@@ -1,11 +1,31 @@
-const blogSetting = require('../models/blogSettingsModel');
+const BlogSetting = require('../models/blogSettingsModel');
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 
+
+const login = async (req, res) => {
+
+    res.send('Blog One');
+}
+
+const blogSetup = async (req, res) => {
+    try {
+        const blogSettings = await BlogSetting.find({});
+        if (blogSettings.length > 0) {
+            res.redirect('/login');
+        } else {
+            res.render('blogSetup');
+        }
+
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+
 const blogSetupSave = async (req, res) => {
     try {
-        //const blogSettings = await blogSetting.find({});
-        const blogSetting = new blogSetting({
+
+        const blogSetting = new BlogSetting({
             ...req.body, // Spread the properties from req.body
             blog_logo: req.file.filename // Add the blog_logo property separately
         });
@@ -28,25 +48,7 @@ const blogSetupSave = async (req, res) => {
     }
 }
 
-const login = async (req, res) => {
 
-    res.send('Blog One');
-}
-
-
-const blogSetup = async (req, res) => {
-    try {
-        const blogSettings = await blogSetting.find({});
-        if (blogSettings.length > 0) {
-            res.render('blogSetup');
-        } else {
-            res.redirect('/blogs');
-        }
-
-    } catch (err) {
-        console.log(err.message);
-    }
-}
 
 const dashboard = async (req, res) => {
     try {

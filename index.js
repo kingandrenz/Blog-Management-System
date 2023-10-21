@@ -9,7 +9,7 @@ const userRoute = require('./routes/userRoute');
 const app = express();
 
 
-dbURI = 'mongodb://localhost:27017/BMS';
+dbURI = 'mongodb+srv://Andrenz:Akaka1na5@flextech-blog.m0d8jso.mongodb.net/BMS?retryWrites=true&w=majority';
 
 mongoose.connect(dbURI);
 
