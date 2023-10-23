@@ -5,7 +5,7 @@ const bcrypt = require('bcrypt');
 
 const login = async (req, res) => {
 
-    res.send('Blog One');
+    res.render('login');
 }
 
 const blogSetup = async (req, res) => {

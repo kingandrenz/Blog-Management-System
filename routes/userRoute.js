@@ -6,6 +6,7 @@ const sessionSecret = require('../config/config').sessionSecret;
 const session = require('express-session');
 
 const user_controller = require('../controllers/userController');
+const adminLoginAuth = require('../middlewares/adminLoginAuth');
 
 // Middleware
 user_route.use(express.urlencoded({ extended: true }));
@@ -18,11 +19,11 @@ user_route.use(express.static('public'));
 // express-session middleware
 user_route.use(session({
     secret: sessionSecret,
-    resave: false,
+    resave: true,
     saveUninitialized: true
 }));
 
-user_route.get('/login', user_controller.loadLogin);
+user_route.get('/login', adminLoginAuth.isLogout, user_controller.loadLogin);
 user_route.post('/login', user_controller.verifyLogin);
 user_route.get('/profile', user_controller.profile);
 

@@ -3,6 +3,7 @@ const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 
 const loadLogin = async (req, res) => {
+    res.setHeader('Cache-Control', 'no-store'); // Disable caching
     try {
         res.render('login');
     } catch (err) {
@@ -13,28 +14,32 @@ const loadLogin = async (req, res) => {
 const verifyLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
+        console.log(email, password);
 
-        const userData = await User.findOne({email: email});
+        const userData = await User.findOne({ email });
         if (userData) {
             const isMatch = await bcrypt.compare(password, userData.password);
             if (isMatch) {
-                req.session.user_id = userData_id; //Store user data in the session
-                req.session.is_admin = userData.is_admin; //Store user data in the session
+                req.session.user_id = userData._id; // Store user data in the session
+                req.session.is_admin = userData.is_admin; // Store user data in the session
                 if (userData.is_admin == 1) {
                     res.redirect('/dashboard');
                 } else {
                     res.redirect('/profile');
                 }
             } else {
-                res.render('/login', {message: 'Invalid email or password'});
+                console.log('Invalid email or password');
+                res.render('login', { message: 'Invalid email or password' });
             }
         } else {
-            res.render('/login', {message: 'Invalid email or password'});
+            console.log('Invalid email or password');
+            res.render('login', { message: 'Invalid email or password' });
         }
     } catch (err) {
         console.log(err);
     }
 };
+
 
 const profile = async (req, res) => {
     try {
