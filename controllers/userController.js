@@ -14,7 +14,6 @@ const loadLogin = async (req, res) => {
 const verifyLogin = async (req, res) => {
     try {
         const { email, password } = req.body;
-        console.log(email, password);
 
         const userData = await User.findOne({ email });
         if (userData) {
@@ -49,8 +48,22 @@ const profile = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+    try {
+        req.session.destroy(err => {
+            if (err) {
+                console.log(err);
+            }
+            res.redirect('/login');
+        });
+    } catch (err) {
+        console.log(err);
+    }
+};
+
 module.exports = {
     loadLogin,
     verifyLogin,
-    profile
+    profile,
+    logout
 }

@@ -41,5 +41,7 @@ admin_route.get('/login', admin_controller.login);
 admin_route.get('/blog-setup', admin_controller.blogSetup);
 admin_route.post('/blog-setup', upload.single('blog_logo'), admin_controller.blogSetupSave);
 admin_route.get('/dashboard', adminLoginAuth.isLogin, admin_controller.dashboard);
+admin_route.get('/create-post', adminLoginAuth.isLogin, admin_controller.createPostForm);
+admin_route.post('/create-post', adminLoginAuth.isLogin, admin_controller.createPost);
 
 module.exports = admin_route;

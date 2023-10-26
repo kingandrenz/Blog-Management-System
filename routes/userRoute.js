@@ -25,6 +25,7 @@ user_route.use(session({
 
 user_route.get('/login', adminLoginAuth.isLogout, user_controller.loadLogin);
 user_route.post('/login', user_controller.verifyLogin);
+user_route.get('/logout', adminLoginAuth.isLogin, user_controller.logout);
 user_route.get('/profile', user_controller.profile);
 
 module.exports = user_route;
