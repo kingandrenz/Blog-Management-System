@@ -4,6 +4,7 @@ const isBlog = require("./middlewares/isBlog");
 //require routes
 const adminRoute = require('./routes/adminRoute');
 const userRoute = require('./routes/userRoute');
+const blogRoute = require('./routes/blogRoutes');
 
 
 const app = express();
@@ -24,6 +25,9 @@ app.use('/', adminRoute);
 
 // for user routes
 app.use('/', userRoute);
+
+//for blog routes
+app.use('/', blogRoute);
 
 app.listen(3000, () => {
     console.log("app is listening on port 3000");

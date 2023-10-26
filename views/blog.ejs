@@ -1,0 +1,30 @@
+<%- include('./partials/header.ejs') %>
+<body>
+    <%- include('./partials/navbar.ejs') %>
+    <!-- Page Content-->
+    <div class="container px-4 px-lg-5">
+        <!-- Heading Row-->
+
+        <% if (blogs.length > 0) { %>
+            <% blogs.forEach(blog => { %>
+                <div class="row gx-4 gx-lg-5 align-items-center my-5">
+                    <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="<%= blog.image %>" alt="..." /></div>
+                    <div class="col-lg-5">
+                        <h1 class="font-weight-light"><%= blog.title %></h1>
+                        <p><%= blog.description %></p>
+                        <a class="btn btn-primary" href="/blogs/<%= blog._id %>">Read More</a>
+                    </div>
+                </div>
+            <% }) %>
+        <% } else { %>
+            <div class="row gx-4 gx-lg-5 align-items-center my-5">
+                <div class="col-lg-7"><img class="img-fluid rounded mb-4 mb-lg-0" src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg" alt="..." /></div>
+                <div class="col-lg-5">
+                    <h1 class="font-weight-light">No Blogs Found</h1>
+                    <p>There are no blogs to display.</p>
+                    <a class="btn btn-primary" href="/blogs/new">Create New Blog</a>
+                </div>
+            </div>
+        <% } %>
+    </div>
+<%- include('./partials/footer.ejs') %>
