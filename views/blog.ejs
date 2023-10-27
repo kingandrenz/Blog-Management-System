@@ -1,5 +1,5 @@
 <%- include('./partials/header.ejs') %>
-<body>
+
     <%- include('./partials/navbar.ejs') %>
     <!-- Page Content-->
     <div class="container px-4 px-lg-5">
@@ -12,7 +12,7 @@
                     <div class="col-lg-5">
                         <h1 class="font-weight-light"><%= blog.title %></h1>
                         <p><%= blog.description %></p>
-                        <a class="btn btn-primary" href="/blogs/<%= blog._id %>">Read More</a>
+                        <a class="btn btn-primary" href="/blogs/<%= blog.id %>">Read More</a>
                     </div>
                 </div>
             <% }) %>

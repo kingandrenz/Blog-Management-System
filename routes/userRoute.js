@@ -27,5 +27,7 @@ user_route.get('/login', adminLoginAuth.isLogout, user_controller.loadLogin);
 user_route.post('/login', user_controller.verifyLogin);
 user_route.get('/logout', adminLoginAuth.isLogin, user_controller.logout);
 user_route.get('/profile', user_controller.profile);
+user_route.get('/forgot-password', adminLoginAuth.isLogout, user_controller.forgotPassword);
+user_route.post('/forgot-password', user_controller.forgotPasswordpost);
 
 module.exports = user_route;

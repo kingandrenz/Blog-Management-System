@@ -1,5 +1,5 @@
 <%- include('./partials/header') %>
-<div class="container">
+<div class="container mb-5 mt-5">
   <div class="row">
     <div class="col-md-6 col-md-offset-3">
       <h1>Login</h1>
@@ -19,8 +19,17 @@
           <label for="password">Password</label>
           <input class="form-control" type="text" name="password" id="password" placeholder="Password" required>
         </div>
-        <button class="btn btn-primary" type="submit">Login</button>
+
+         <!-- Login button -->
+         <div class="form-group my-4 text-center">
+          <button class="btn btn-primary" type="submit">Login</button>
+          </div>
+
       </form>
+       <!-- Add the "Forgot Password" button -->
+       <div class="form-group my-4 text-center">
+        <a href="/forgot-password" class="btn btn-link">Forgot Password?</a>
+      </div>
     </div>
   </div>
 

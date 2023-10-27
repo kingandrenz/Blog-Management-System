@@ -17,4 +17,6 @@ blog_route.get('/', (req, res) => {
 
 blog_route.get('/blogs', blogController.loadBlog);
 
+blog_route.get('/blogs/:id', blogController.loadBlogById);
+
 module.exports = blog_route;

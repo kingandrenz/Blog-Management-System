@@ -1,6 +1,9 @@
 const e = require('express');
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
+const config = require('../config/config');
+const nodemailer = require('nodemailer');
+const randomstring = require('randomstring');
 
 const loadLogin = async (req, res) => {
     res.setHeader('Cache-Control', 'no-store'); // Disable caching
@@ -61,9 +64,40 @@ const logout = async (req, res) => {
     }
 };
 
+const forgotPassword = async (req, res) => {
+    try {
+        res.render('forgot-password');
+    } catch (err) {
+        console.log(err);
+    }
+}
+
+cont forgotPasswordpost = async (req, res) => {
+    try {
+        const { email } = req.body;
+        const userData = await User.findOne({ email });
+
+        if (userData) {
+            const token = randomstring.generate();
+            await User.updateOne({ email }, { $set: { token } });
+            sendResetPasswordEmail(userData.name, userData.email, token);
+            res.render('forgot-password', { message: 'Please check your email to reset password' });
+            
+        } else {
+            console.log('Email not found');
+            res.render('forgot-password', { message: 'Email not found' });
+        }
+
+    } catch (err) {
+        console.log(err);
+    }  
+}
+
 module.exports = {
     loadLogin,
     verifyLogin,
     profile,
-    logout
+    logout,
+    forgotPassword,
+    forgotPasswordpost,
 }
