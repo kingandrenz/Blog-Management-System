@@ -5,6 +5,43 @@ const config = require('../config/config');
 const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
 
+// Send email: nodemailer
+const sendResetPasswordEmail = (name, email, resetLink) => {
+    const transporter = nodemailer.createTransport({
+        host: 'smtp.gmail.com',
+        port: 587,
+        secure: false, // SSL
+        requireTLS: true,
+        auth: {
+            user: config.emailUser,
+            pass: config.emailPassword
+        }
+    });
+
+    const mailOptions = {
+        from: config.emailUser,
+        to: email,
+        subject: 'Reset password',
+        html: `
+            <p>Hi ${name},</p>
+            <p>You have requested a password reset. Click the following link to reset your password:</p>
+            <a href="${resetLink}">Reset Password</a>
+            <p>If you didn't request this, please ignore this email.</p>
+            <p>Thank you</p>   
+            `
+    }
+
+    transporter.sendMail(mailOptions, (err, info) => {
+        if (err) {
+            console.log(err);
+        } else {
+            console.log('Email sent: ' + info.response);
+        }
+    });
+
+};
+
+
 const loadLogin = async (req, res) => {
     res.setHeader('Cache-Control', 'no-store'); // Disable caching
     try {
@@ -72,7 +109,7 @@ const forgotPassword = async (req, res) => {
     }
 }
 
-cont forgotPasswordpost = async (req, res) => {
+const forgotPasswordpost = async (req, res) => {
     try {
         const { email } = req.body;
         const userData = await User.findOne({ email });
@@ -80,7 +117,9 @@ cont forgotPasswordpost = async (req, res) => {
         if (userData) {
             const token = randomstring.generate();
             await User.updateOne({ email }, { $set: { token } });
-            sendResetPasswordEmail(userData.name, userData.email, token);
+
+            const resetLink = `${process.env.APP_URL}/reset-password/${token}`;
+            sendResetPasswordEmail(userData.name, userData.email, resetLink);
             res.render('forgot-password', { message: 'Please check your email to reset password' });
             
         } else {
@@ -91,7 +130,76 @@ cont forgotPasswordpost = async (req, res) => {
     } catch (err) {
         console.log(err);
     }  
-}
+};
+
+/* const resetPassword = async (req, res) => {
+    try {
+        const { token } = req.params;
+        const userToken = await User.findOne({ token });
+
+        if (userToken) {
+            res.render('reset-password', { token });
+        } else {
+            res.render('404', { message: 'Invalid token' });
+        }
+
+    } catch (err) {
+        console.log(err);
+    } */
+
+    const resetPassword = async (req, res) => {
+        const { token } = req.params;
+        try {
+            res.render('reset-password', { token });
+
+        } catch (err) {
+            console.log(err);
+        }
+
+    };
+
+    const postResetPassword = async (req, res) => {
+        try {
+            const { token, password, confirmPassword } = req.body;
+    
+            // Check if the password and confirmPassword match
+            if (password !== confirmPassword) {
+                return res.render('reset-password', { message: 'Passwords do not match' });
+            }
+    
+            // Find the user with the provided token
+            const user = await User.findOne({ token });
+    
+            if (!user) {
+                return res.status(404).json({  message: 'Invalid token' });
+            }
+    
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(password, 10);
+    
+            // Update the user's password and remove the token
+            await User.updateOne(
+                { token },
+                { $set: { password: hashedPassword, token: null } }
+            );
+    
+            res.status(200).json({ message: 'Password reset successfully' });
+            res.redirect('/login');
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({ error: 'Internal Server Error' });
+        }
+    };
+    
+    const 404 = async (req, res) => {
+        try {
+            res.render('404');
+        } catch (err) {
+            console.log(err);
+        }
+    };
+
+
 
 module.exports = {
     loadLogin,
@@ -100,4 +208,7 @@ module.exports = {
     logout,
     forgotPassword,
     forgotPasswordpost,
+    resetPassword,
+    postResetPassword,
+    404,
 }
