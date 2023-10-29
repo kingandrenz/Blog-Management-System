@@ -30,7 +30,7 @@ user_route.get('/profile', user_controller.profile);
 user_route.get('/forgot-password', adminLoginAuth.isLogout, user_controller.forgotPassword);
 user_route.post('/forgot-password', user_controller.forgotPasswordpost);
 user_route.get('/reset-password/:token', adminLoginAuth.isLogout, user_controller.resetPassword);
-user_route.post('/reset-password/', user_controller.resetPasswordpost);
-user_route.get('/404', user_controller.error404);  ')
+user_route.post('/reset-password', user_controller.postResetPassword);
+user_route.get('/404', user_controller.error404);
 
 module.exports = user_route;

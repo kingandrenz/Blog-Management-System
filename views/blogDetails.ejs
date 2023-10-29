@@ -12,7 +12,7 @@
                     <!-- Post title-->
                     <h1 class="fw-bolder mb-1"><%= blog.title %></h1>
                     <!-- Post meta content-->
-                    <div class="text-muted fst-italic mb-2">Posted on <%= blog.createdAt.toDateString() %>, by Start Bootstrap</div>
+                    <div class="text-muted fst-italic mb-2">Posted on <%= blog.createdAt.toDateString() %>, by <%= blog.name %></div>
                     <!-- Post categories-->
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Web Design</a>
                     <a class="badge bg-secondary text-decoration-none link-light" href="#!">Freebies</a>
@@ -29,7 +29,15 @@
                 <div class="card bg-light">
                     <div class="card-body">
                         <!-- Comment form-->
-                        <form class="mb-4"><textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!"></textarea></form>
+                        <h5 class="card-title">Leave a comment</h5>
+                        <form class="mb-4" id="comment-form">
+                            <input type="text" name="username" placeholder="Enter your name" required class="form-control mt-5">
+                            <input type="text" name="blogId" value="<%= blog._id %>" hidden>
+                            <textarea class="form-control" rows="3" placeholder="Join the discussion and leave a comment!" required></textarea>
+                            <input type="submit" value="Submit" class="btn btn-primary mt-3">
+                        </form>
+
+                        <p class="com-status" style="color: green;"></p>
                         <!-- Comment with nested comments-->
                         <div class="d-flex mb-4">
                             <!-- Parent comment-->
@@ -82,5 +90,48 @@
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function() {
+        $('#comment-form').submit(function(e) {
+            e.preventDefault();
+            let username = $('input[name="username"]').val();
+            let comment = $('textarea').val();
+            let blogId = '<%= blog._id %>';
+            // we can also use the serialize method to get the form data or the manual method below
+            //serialize the form data
+            const formData = $(this).serialize();
+            $.ajax({
+                url: '/comment',
+                method: 'POST',
+                data: formData,
+                success: function(response) {
+                    $('.com-status').text(response.message);
+                    setTimeout(() => {
+                        &('.com-status').text('');
+                    }, 3000);
+                    $('input[name="username"]').val('');
+                    $('textarea').val('');
+                }
+            })
+            //manually serialize the form data
+            /*$.ajax({
+                url: '/comment',
+                method: 'POST',
+                data: {
+                    username,
+                    comment,
+                    blogId
+                },
+                success: function(response) {
+                    $('.com-status').html(response.message);
+                    $('input[name="username"]').val('');
+                    $('textarea').val('');
+                }
+            }) */
+        })
+    })
+</script>
+
 <%- include('./partials/footer.ejs') %>
 ```

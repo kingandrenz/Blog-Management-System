@@ -150,7 +150,7 @@ const forgotPasswordpost = async (req, res) => {
     const resetPassword = async (req, res) => {
         const { token } = req.params;
         try {
-            res.render('reset-password', { token });
+            res.render('reset-password', { token, message: '' });
 
         } catch (err) {
             console.log(err);
@@ -171,7 +171,7 @@ const forgotPasswordpost = async (req, res) => {
             const user = await User.findOne({ token });
     
             if (!user) {
-                return res.status(404).json({  message: 'Invalid token' });
+                res.render('404', { message: 'Invalid token' });
             }
     
             // Hash the new password
@@ -183,15 +183,14 @@ const forgotPasswordpost = async (req, res) => {
                 { $set: { password: hashedPassword, token: null } }
             );
     
-            res.status(200).json({ message: 'Password reset successfully' });
-            res.redirect('/login');
+            res.redirect('/login'); // Redirect the user to the login page after successful password reset
         } catch (err) {
             console.log(err);
             res.status(500).json({ error: 'Internal Server Error' });
         }
     };
     
-    const 404 = async (req, res) => {
+    const error404 = async (req, res) => {
         try {
             res.render('404');
         } catch (err) {
@@ -210,5 +209,5 @@ module.exports = {
     forgotPasswordpost,
     resetPassword,
     postResetPassword,
-    404,
+    error404,
 }

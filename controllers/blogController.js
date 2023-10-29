@@ -19,7 +19,31 @@ const loadBlogById = async (req, res) => {
     }
 }
 
+const postComment = async (req, res) => {
+    try {
+        const { username, email, comment, blog_id } = req.body;
+        const blog = await Blog.findByIdAndUpdate(blog_id, {
+            $push: {
+                comments: {
+                    username,
+                    email,
+                    comment
+                }
+            }
+        });
+
+        res.status(200).send({success: true, message: 'Comment posted successfully'});
+        //res.redirect(`/blogs/${blog_id}`);
+    } catch (err) {
+        console.log(err);
+        res.status(200).send({success: false, message: err.message});
+    }
+}
+
+
+
 module.exports = {
     loadBlog,
     loadBlogById,
+    postComment
 };

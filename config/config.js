@@ -1,6 +1,6 @@
 const sessionSecret = 'blogSessionSecret';
 const emailUser = 'kanuchibueze@gmail.com';
-const emailPassword = 'akaka1na5';
+const emailPassword = 'ufnfiovotalasxgu';
 
  module.exports = {
     sessionSecret,
