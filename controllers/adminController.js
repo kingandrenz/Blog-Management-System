@@ -69,6 +69,11 @@ const createPostForm = async (req, res) => {
 
 const createPost = async (req, res) => {
     try {
+        let image = '';
+        if (req.body.image !== undefined) {
+            image = req.body.image;
+        }
+        
         const post = new Post({
             ...req.body, // Spread the properties from req.body
             //post_image: req.file.filename // Add the blog_logo property separately
@@ -81,6 +86,15 @@ const createPost = async (req, res) => {
     };
 }
  
+const uploadPostImage = async (req, res) => {
+    try {
+        let imagePath = '/images/';
+        imagePath += req.file.filename;
+        res.send({success: true, message: 'Post Image uploaded successfully!', image_path: imagePath});
+    } catch (err) {
+        res.send({success: false, message: err.message});
+    }
+}
 
 module.exports = {
     login,
@@ -88,5 +102,6 @@ module.exports = {
     blogSetup,
     dashboard,
     createPostForm,
-    createPost
+    createPost,
+    uploadPostImage,
 }

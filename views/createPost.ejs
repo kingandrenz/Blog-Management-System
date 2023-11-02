@@ -22,6 +22,18 @@
           />
         </div>
       </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-12">
+
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
+            upload image
+          </button>
+          <input type="hidden" name="image" id="image" value="">
+        </div>
+      </div>
+
       <div class="row mt-3">
         <div class="col-sm-12">
           <h5>Content</h5>
@@ -50,4 +62,57 @@
 <p style="color: green"><%= message %></p>
 <% } %> 
 
-<%- include('./partials/admin-footer') %>
+<!-- Modal -->
+<div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">upload image</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <form id="uploadform" enctype="multipart/form-data">
+        <div class="modal-body">
+          <input type="file" name="image"  required>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">upload</button>
+        </div>
+      </form>
+
+    </div>
+  </div>
+</div>
+
+<script>
+  $(document).ready(function() {
+    $('#uploadform').submit(function(e) {
+      e.preventDefault();
+      var formData = new FormData(this);
+      $.ajax({
+        url: '/upload-post-image',
+        type: 'POST',
+        data: formData,
+        cache: false,
+        contentType: false,
+        processData: false,
+        success: function(data) {
+          if (data.success) { 
+            $('#image').val(data.image_path); 
+            alert(data.message);
+            $('#uploadModal').modal('hide');
+          }
+          else {
+            alert(data.message);
+          }
+        },
+      });
+    });
+  });
+</script>
+
+
+<%- include('./partials/admin-footer') %> 

@@ -21,12 +21,11 @@ const loadBlogById = async (req, res) => {
 
 const postComment = async (req, res) => {
     try {
-        const { username, email, comment, blog_id } = req.body;
+        const { username, comment, blog_id } = req.body;
         const blog = await Blog.findByIdAndUpdate(blog_id, {
             $push: {
                 comments: {
                     username,
-                    email,
                     comment
                 }
             }

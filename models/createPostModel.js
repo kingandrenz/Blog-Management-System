@@ -12,6 +12,10 @@ const postSchema = new Schema({
         required: [true, 'Content is required'],
         minlength: [10, 'Content must be at least 10 characters long']
     },
+    image: {
+        type: String,
+        default: ''
+    },
     comments: {
         type: Object,
         default: {}
