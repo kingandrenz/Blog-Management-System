@@ -1,4 +1,7 @@
 const Blog = require("../models/createPostModel");
+const { ObjectId } = require('mongoose').Types;
+ //const { ObjectId } = require('mongodb');
+
 
 const loadBlog = async (req, res) => {
     try {
@@ -21,11 +24,16 @@ const loadBlogById = async (req, res) => {
 
 const postComment = async (req, res) => {
     try {
-        const { username, comment, blog_id } = req.body;
+        const { username, email, comment, blog_id } = req.body;
+
+        let comment_id = new ObjectId();
+        let _id = comment_id;
         const blog = await Blog.findByIdAndUpdate(blog_id, {
             $push: {
                 comments: {
+                    _id,
                     username,
+                    email,
                     comment
                 }
             }
@@ -39,10 +47,32 @@ const postComment = async (req, res) => {
     }
 }
 
+const postReply = async (req, res) => {
+    try {
+        let reply_id = new ObjectId();
 
+        await Blog.updateOne({
+            "_id": new ObjectId(req.body.blog_id),
+            "comments._id": new ObjectId(req.body.comment_id)
+        }, {
+            $push: {
+                "comments.$.replies": {
+                    _id: reply_id,
+                    username: req.body.username,
+                    reply: req.body.reply
+                }
+            }
+        });
+        res.status(200).send({ success: true, message: 'Reply posted successfully' });
+
+    } catch (err) {
+        console.log(err);
+    }
+}
 
 module.exports = {
     loadBlog,
     loadBlogById,
-    postComment
+    postComment,
+    postReply,
 };

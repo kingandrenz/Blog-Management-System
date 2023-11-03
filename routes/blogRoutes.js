@@ -20,5 +20,6 @@ blog_route.get('/blogs', blogController.loadBlog);
 blog_route.get('/blogs/:id', blogController.loadBlogById);
 
 blog_route.post('/comment', blogController.postComment);
+blog_route.post('/reply', blogController.postReply);
 
 module.exports = blog_route;
