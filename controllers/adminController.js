@@ -73,18 +73,20 @@ const createPost = async (req, res) => {
         if (req.body.image !== undefined) {
             image = req.body.image;
         }
-        
+
         const post = new Post({
-            ...req.body, // Spread the properties from req.body
-            //post_image: req.file.filename // Add the blog_logo property separately
+            ...req.body,
+            //post_image: req.file.filename
         });
         const newPost = await post.save();
 
-        res.render('createPost', {message: 'Post created successfully!', title: 'BMS Admin'});
+        res.render('createPost', { message: 'Post created successfully!', title: 'BMS Admin' });
     } catch (err) {
         console.log(err.message);
-    };
-}
+        res.render('createPost', { message: 'Error creating the post.', title: 'BMS Admin' });
+    }
+};
+
  
 const uploadPostImage = async (req, res) => {
     try {

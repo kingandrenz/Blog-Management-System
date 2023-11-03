@@ -56,11 +56,12 @@
         </div>
       </div>
     </form>
+    <% if (typeof message !== 'undefined') { %>
+      <p style="color: green"><%= message %></p>
+      <% } %> 
   </div>
 </div>
-<% if (typeof message !== 'undefined') { %>
-<p style="color: green"><%= message %></p>
-<% } %> 
+
 
 <!-- Modal -->
 <div class="modal fade" id="uploadModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
