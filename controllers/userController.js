@@ -2,21 +2,11 @@ const e = require('express');
 const User = require('../models/userModel');
 const bcrypt = require('bcrypt');
 const config = require('../config/config');
-const nodemailer = require('nodemailer');
 const randomstring = require('randomstring');
+const transporter = require('../nodemailer');
 
 // Send email: nodemailer
 const sendResetPasswordEmail = (name, email, resetLink) => {
-    const transporter = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false, // SSL
-        requireTLS: true,
-        auth: {
-            user: config.emailUser,
-            pass: config.emailPassword
-        }
-    });
 
     const mailOptions = {
         from: config.emailUser,
@@ -118,7 +108,8 @@ const forgotPasswordpost = async (req, res) => {
             const token = randomstring.generate();
             await User.updateOne({ email }, { $set: { token } });
 
-            const resetLink = `${process.env.APP_URL}/reset-password/${token}`;
+            // const resetLink = `${process.env.APP_URL}/reset-password/${token}`;
+            const resetLink = `${config.domain}/reset-password/${token}`;
             sendResetPasswordEmail(userData.name, userData.email, resetLink);
             res.render('forgot-password', { message: 'Please check your email to reset password' });
             

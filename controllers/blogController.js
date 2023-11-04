@@ -1,6 +1,38 @@
 const Blog = require("../models/createPostModel");
 const { ObjectId } = require('mongoose').Types;
  //const { ObjectId } = require('mongodb');
+const transporter = require('../nodemailer');
+const config = require('../config/config');
+
+ const sendCommentEmail = async (name, email, comment, blog_id) => {
+    
+        try {
+            const mailOptions = {
+                from: 'Gistflex Blog',
+                to: email,
+                subject: 'New comment',
+                html: `
+                    <p>Hi ${name},</p>
+                    <p>` +name+`, commentend on your blog:</p>
+                    <p>${comment}</p>
+                    <a href="${config.domain}/blogs/${blog_id}">View blog</a>
+                    <!-- <a> href="${process.env.APP_URL}/blogs/${blog_id}">View blog</a> -->
+                    <p>Thank you</p>   
+                    `
+            }
+        
+            transporter.sendMail(mailOptions, (err, info) => {
+                if (err) {
+                    console.log(err);
+                } else {
+                    console.log('Email sent: ' + info.response);
+                }
+            });
+
+        } catch (err) {
+            console.log(err);
+        }
+    };
 
 
 const loadBlog = async (req, res) => {
@@ -63,6 +95,8 @@ const postReply = async (req, res) => {
                 }
             }
         });
+
+        sendCommentEmail(req.body.username, req.body.comment_email, req.body.reply, req.body.blog_id);
         res.status(200).send({ success: true, message: 'Reply posted successfully' });
 
     } catch (err) {
