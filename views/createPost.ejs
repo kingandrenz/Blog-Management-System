@@ -5,7 +5,7 @@
   <h2 class="mb-4">Create Post</h2>
 
   <div class="container">
-    <form method="post" action="/create-post">
+    <form method="post" action="/create-post" id="createPost">
       <div class="row">
         <div class="col-sm-12">
           <h5>Title</h5>
@@ -105,6 +105,37 @@
             $('#image').val(data.image_path); 
             alert(data.message);
             $('#uploadModal').modal('hide');
+          }
+          else {
+            alert(data.message);
+          }
+        },
+      });
+    });
+    
+    $('#createPost').submit(function(e) {
+      e.preventDefault();
+      let obj = $(this);
+      let formData = {};
+      $.each($(this).serializeArray(), function(_, field) {
+        formData[field.name] = field.value;
+      });
+      console.log(formData);
+      $.ajax({
+        url: '/create-post',
+        type: 'POST',
+        data: formData,
+        success: function(data) {
+          if (data.success) { 
+            alert(data.message);
+            $(obj)[0].reset();
+            $('#image').val('');
+            formData._id = data._id;
+            console.log('Form data:', formData);
+
+            let socket = io();
+            socket.emit('new_post', formData);
+            console.log('Emitting new_post event');
           }
           else {
             alert(data.message);

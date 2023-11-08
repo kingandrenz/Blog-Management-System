@@ -80,10 +80,12 @@ const createPost = async (req, res) => {
         });
         const newPost = await post.save();
 
-        res.render('createPost', { message: 'Post created successfully!', title: 'BMS Admin' });
+        res.send({success: true, message: 'Post created successfully!', _id: newPost._id});
+        //res.render('createPost', { message: 'Post created successfully!', title: 'BMS Admin' });
     } catch (err) {
-        console.log(err.message);
-        res.render('createPost', { message: 'Error creating the post.', title: 'BMS Admin' });
+        // console.log(err.message);
+        res.send({success: false, message: err.message});
+        //res.render('createPost', { message: 'Error creating the post.', title: 'BMS Admin' });
     }
 };
 
