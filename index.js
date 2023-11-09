@@ -51,4 +51,10 @@ io.on('connection', (socket) => {
     socket.broadcast.emit('new_post', formData);
 
   });
+
+  socket.on("new_comment", (comment) => {
+    // console.log(comment);
+    io.emit("new_comment", comment);
+});
+
 });

@@ -71,7 +71,7 @@ const postComment = async (req, res) => {
             }
         });
 
-        res.status(200).send({success: true, message: 'Comment posted successfully'});
+        res.status(200).send({success: true, message: 'Comment posted successfully', _id: comment_id });
         //res.redirect(`/blogs/${blog_id}`);
     } catch (err) {
         console.log(err);
