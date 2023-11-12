@@ -97,7 +97,7 @@ const postReply = async (req, res) => {
         });
 
         sendCommentEmail(req.body.username, req.body.comment_email, req.body.reply, req.body.blog_id);
-        res.status(200).send({ success: true, message: 'Reply posted successfully' });
+        res.status(200).send({ success: true, message: 'Reply posted successfully', _id: reply_id });
 
     } catch (err) {
         console.log(err);

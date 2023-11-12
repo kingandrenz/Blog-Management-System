@@ -57,4 +57,9 @@ io.on('connection', (socket) => {
     io.emit("new_comment", comment);
 });
 
+socket.on("new_reply", (reply) => {
+  // console.log(replies);
+  io.emit("new_reply", reply);
+});
+
 });
