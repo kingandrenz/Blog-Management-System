@@ -48,4 +48,6 @@ admin_route.post('/create-post', adminLoginAuth.isLogin, admin_controller.create
 
 admin_route.post('/upload-post-image', adminLoginAuth.isLogin, upload.single('image'), admin_controller.uploadPostImage);
 
+admin_route.post('/delete-post', adminLoginAuth.isLogin, admin_controller.deletePost);
+
 module.exports = admin_route;

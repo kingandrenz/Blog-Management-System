@@ -102,6 +102,17 @@ const uploadPostImage = async (req, res) => {
     }
 }
 
+const deletePost = async (req, res) => {
+    try {
+        // const post = await Post.findByIdAndDelete(req.body.post_id);
+        await Post.deleteOne({_id: req.body.post_id});
+        res.status(200).send({success: true, message: 'Post deleted successfully!'});
+    } catch (err) {
+        res.status(400).send({success: false, message: err.message});
+    }
+
+}
+
 module.exports = {
     login,
     blogSetupSave,
@@ -110,4 +121,5 @@ module.exports = {
     createPostForm,
     createPost,
     uploadPostImage,
+    deletePost,
 }
