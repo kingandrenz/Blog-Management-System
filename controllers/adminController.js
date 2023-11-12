@@ -63,7 +63,7 @@ const dashboard = async (req, res) => {
 
 const createPostForm = async (req, res) => {
     try {
-        res.render('createPost', {title: 'Create Post'});
+        res.render('admin/createPost', {title: 'Create Post'});
     } catch (err) {
         console.log(err.message);
     }
@@ -113,6 +113,33 @@ const deletePost = async (req, res) => {
 
 }
 
+const editPostForm = async (req, res) => {
+    try {
+        const post = await Post.findOne({_id: req.params.id});
+        res.render('admin/editPost', {title: 'Edit Post', post: post});
+    } catch (err) {
+        console.log(err.message);
+    }
+
+}
+
+
+const updatePost = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndUpdate({_id: req.body.id}, {
+            $set: {
+                title: req.body.title,
+                content: req.body.content,
+                // post_image: req.body.post_image
+            }
+        });
+        res.send({success: true, message: 'Post updated successfully!'});
+    } catch (err) {
+        res.send({success: false, message: err.message});
+    }
+}
+
+
 module.exports = {
     login,
     blogSetupSave,
@@ -122,4 +149,6 @@ module.exports = {
     createPost,
     uploadPostImage,
     deletePost,
+    editPostForm,
+    updatePost,
 }
