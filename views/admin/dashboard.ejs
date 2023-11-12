@@ -19,13 +19,46 @@
           </li>
           <li>
               <a href="/create-post"><span class="fa fa-sticky-note-o mr-3"></span> Create Post</a>
+          </li>
         </ul>
-
       </nav>
       
       <!-- Page Content  -->
       <div id="content" class="p-4 p-md-5 pt-5">
         <h2 class="mb-4">Dashboard</h2>
+
+        <div class="table-responsive">
+          <table class="table">
+            <thead>
+              <tr> 
+                <th>#</th>
+                <th>Title</th>
+                <th>Content</th>
+                <th>Image</th>
+                <th>Edit</th>
+                <th>Delete</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% if(posts.length > 0) { %>
+                <% posts.forEach(function(post, index) { %>
+                  <tr>
+                    <td><%= index + 1 %></td>
+                    <td><%= post.title %></td>
+                    <td><%- post.content %></td>
+                    <td><img src="<%= post.image %>" alt="<%= post.image %>" width="100px" ></td>
+                    <td><a href="/edit-post/<%= post.id %>">Edit</a></td>
+                    <td><a href="/delete-post/<%= post.id %>">Delete</a></td>
+                  </tr>
+                <% }) %>
+              <% } else { %>
+                <tr>
+                  <td colspan="4">No posts found</td>
+                </tr>
+              <% } %>
+            </tbody>
+          </table>
+        </div>
       </div>
 
 <%- include('../partials/admin-footer') %>

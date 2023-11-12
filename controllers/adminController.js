@@ -53,7 +53,9 @@ const blogSetupSave = async (req, res) => {
 
 const dashboard = async (req, res) => {
     try {
-        res.render('admin/dashboard', {title: 'BMS Admin'});
+        const allPosts = await Post.find({});
+
+        res.render('admin/dashboard', {title: 'BMS Admin', posts: allPosts});
     } catch (err) {
         console.log(err.message);
     }
