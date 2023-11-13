@@ -130,7 +130,7 @@ const updatePost = async (req, res) => {
             $set: {
                 title: req.body.title,
                 content: req.body.content,
-                // post_image: req.body.post_image
+                image: req.body.image,
             }
         });
         res.send({success: true, message: 'Post updated successfully!'});
