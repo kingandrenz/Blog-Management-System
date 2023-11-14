@@ -36,7 +36,63 @@
     <% } %>
 </div>
 
+<div class="container mb-3">
+    <div class="text-center">
+        <button class="btn btn-info">previous page</button>
+        <button class="btn btn-info" onclick="getNext()">next page</button>
+    </div>
+</div>
+
 <script>
+    let start = 0;
+    let limit = <%= postLimit %>;
+
+    function getNext()
+    {
+        console.log("Next button clicked");
+        start += limit;
+        $.ajax({
+            url: "/getNext-posts"+start+"/"+limit,
+            type: "GET",
+            success: function(data) {
+                // console.log(data);
+                renderPost(data);
+               
+            }
+        });
+
+    };
+
+    function renderPost()
+    {
+        if(posts.length > 0) {
+            let html = "";
+            
+            posts.forEach(post => {
+                let image = "";
+                if(post.image !== undefined && post.image !== '') {
+                    image = `<img class="img-fluid rounded mb-4 mb-lg-0" src="` + post.image + `" alt="..." />`;
+                }
+                else {
+                    image = `<img class="img-fluid rounded mb-4 mb-lg-0" src="https://dummyimage.com/900x400/dee2e6/6c757d.jpg" alt="..." />`;
+                }
+                html += `<div class="row gx-4 gx-lg-5 align-items-center my-5">
+                        <div class="col-lg-7">
+                            `+image+`
+                            // <img class="img-fluid rounded mb-4 mb-lg-0" src="` + image + `" alt="..." />
+                        </div>
+                        <div class="col-lg-5">
+                            <h1 class="font-weight-light">`+post.title+`</h1>
+                            <p>`+post.description+`></p>
+                            <a class="btn btn-primary" href="/blogs/`+post._id+`">Read More</a>
+                        </div>
+                    </div>`;
+            });
+
+            $('.posts').html(html);
+        }
+    }
+
     let socket = io();
 
     socket.on("deletePost", function(postId) {
