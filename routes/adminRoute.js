@@ -53,4 +53,7 @@ admin_route.post('/delete-post', adminLoginAuth.isLogin, admin_controller.delete
 admin_route.get('/edit-post/:id', adminLoginAuth.isLogin, admin_controller.editPostForm);
 admin_route.post('/update-post', adminLoginAuth.isLogin, admin_controller.updatePost);
 
+admin_route.get('/admin/settings', adminLoginAuth.isLogin, admin_controller.settings);
+admin_route.post('/admin/settings', adminLoginAuth.isLogin, admin_controller.saveSettings);
+
 module.exports = admin_route;
