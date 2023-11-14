@@ -62,4 +62,9 @@ socket.on("new_reply", (reply) => {
   io.emit("new_reply", reply);
 });
 
+socket.on("deletePost", (postId) => {
+  // console.log(postId);
+  socket.broadcast.emit("deletePost", postId);
+});
+
 });

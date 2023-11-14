@@ -51,6 +51,10 @@
         data: { id: postId },
         success: function(response) {
           if(response.success) {
+            let socket = io();
+            socket.emit('deletePost', postId);
+
+            
             obj.parent().parent().remove();
             alert('Post deleted successfully');
           } else {

@@ -6,7 +6,7 @@
     <!-- Heading Row -->
     <% if (blogs.length > 0) { %>
         <% blogs.forEach(blog => { %>
-            <div class="row gx-4 gx-lg-5 align-items-center my-5">
+            <div class="row gx-4 gx-lg-5 align-items-center my-5" id="post-<%= blog._id %>">
                 <div class="col-lg-7">
                     <% if (blog.image !== undefined && blog.image !== '') { %>
                         <img class="img-fluid rounded mb-4 mb-lg-0" src="<%= blog.image %>" alt="..." />
@@ -38,6 +38,13 @@
 
 <script>
     let socket = io();
+
+    socket.on("deletePost", function(postId) {
+        console.log(postId);
+        console.log("post-" + postId);
+        document.getElementById("post-" + postId).remove();
+    });
+
     socket.on("new_post", function(formData) {
         // console.log(formData);
         let html = "";
