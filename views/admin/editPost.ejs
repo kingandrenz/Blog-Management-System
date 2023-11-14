@@ -1,0 +1,84 @@
+<%- include('../partials/admin-header') %>
+
+<%- include('../partials/admin-nav') %>
+
+
+<!-- Page Content -->
+<div id="content" class="p-4 p-md-5 pt-5">
+  <h2 class="mb-4">Edit Post</h2>
+
+  <div class="container">
+    <form method="post" action="/edit-post" id="editPost">
+      <div class="row">
+        <div class="col-sm-12">
+          <h5>Title</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+            <input type="hidden" name="id" value="<%= post._id %>">
+          <input type="text" name="title" value="<%= post.title %>" class="w-50" placeholder="Enter title" required/>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-12">
+
+          <!-- Button trigger modal -->
+          <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#uploadModal">
+            upload image
+          </button>
+          <input type="hidden" name="image" id="image" value="">
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-sm-12">
+          <h5>Content</h5>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+            <textarea name="content" rows="5" placeholder="Enter Post content" required class="w-50"><%= post.content %></textarea>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-12">
+          <input type="submit" value="Update Post" class="btn btn-warning" />
+        </div>
+      </div>
+    </form>
+  </div>
+  <p style="color: green;" class="status"></p>
+</div>
+
+
+<script>
+    $(document).ready(function() {
+      $('#editPost').on('submit', function(e) {
+        e.preventDefault();
+        
+        let formData = {};
+        $.each($(this).serializeArray(), function(_, field) {
+          formData[field.name] = field.value;
+        });
+        console.log(formData);
+        
+        $.ajax({
+          url: '/update-post',
+          type: 'POST',
+          data: formData,
+          success: function(data) {
+            if (data.success) {
+              $('.status').text(data.message);
+            } else {
+              $('.status').text(data.message);
+            }
+          },
+        });
+      });
+    });
+  </script>  
+
+
+<%- include('../partials/admin-footer') %> 

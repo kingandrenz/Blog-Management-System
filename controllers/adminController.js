@@ -1,6 +1,7 @@
 const BlogSetting = require('../models/blogSettingsModel');
 const User = require('../models/userModel');
 const Post = require('../models/createPostModel');
+const Settings = require('../models/settingsModel');
 const bcrypt = require('bcrypt');
 
 
@@ -53,7 +54,9 @@ const blogSetupSave = async (req, res) => {
 
 const dashboard = async (req, res) => {
     try {
-        res.render('admin/dashboard', {title: 'BMS Admin'});
+        const allPosts = await Post.find({});
+
+        res.render('admin/dashboard', {title: 'BMS Admin', posts: allPosts});
     } catch (err) {
         console.log(err.message);
     }
@@ -61,7 +64,7 @@ const dashboard = async (req, res) => {
 
 const createPostForm = async (req, res) => {
     try {
-        res.render('createPost', {title: 'Create Post'});
+        res.render('admin/createPost', {title: 'Create Post'});
     } catch (err) {
         console.log(err.message);
     }
@@ -80,10 +83,12 @@ const createPost = async (req, res) => {
         });
         const newPost = await post.save();
 
-        res.render('createPost', { message: 'Post created successfully!', title: 'BMS Admin' });
+        res.send({success: true, message: 'Post created successfully!', _id: newPost._id});
+        //res.render('createPost', { message: 'Post created successfully!', title: 'BMS Admin' });
     } catch (err) {
-        console.log(err.message);
-        res.render('createPost', { message: 'Error creating the post.', title: 'BMS Admin' });
+        // console.log(err.message);
+        res.send({success: false, message: err.message});
+        //res.render('createPost', { message: 'Error creating the post.', title: 'BMS Admin' });
     }
 };
 
@@ -98,6 +103,73 @@ const uploadPostImage = async (req, res) => {
     }
 }
 
+const deletePost = async (req, res) => {
+    try {
+        // const post = await Post.findByIdAndDelete(req.body.post_id);
+        await Post.deleteOne({_id: req.body.post_id});
+        res.status(200).send({success: true, message: 'Post deleted successfully!'});
+    } catch (err) {
+        res.status(400).send({success: false, message: err.message});
+    }
+
+}
+
+const editPostForm = async (req, res) => {
+    try {
+        const post = await Post.findOne({_id: req.params.id});
+        res.render('admin/editPost', {title: 'Edit Post', post: post});
+    } catch (err) {
+        console.log(err.message);
+    }
+
+}
+
+
+const updatePost = async (req, res) => {
+    try {
+        const post = await Post.findByIdAndUpdate({_id: req.body.id}, {
+            $set: {
+                title: req.body.title,
+                content: req.body.content,
+                // post_image: req.body.post_image
+            }
+        });
+        res.send({success: true, message: 'Post updated successfully!'});
+    } catch (err) {
+        res.send({success: false, message: err.message});
+    }
+}
+
+const settings = async (req, res) => {
+    try {
+        const settings = await Settings.findOne({});
+        let postLimit = 0;
+
+        if (settings !== null) {
+            postLimit = settings.post_limit;
+        }
+        res.render('admin/settings', {title: 'Settings', limit: postLimit});
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+
+const saveSettings = async (req, res) => {
+    try {
+        await Settings.updateOne({}, {
+            $set: {
+                post_limit: req.body.postLimit
+            }
+        }, { upsert: true });
+
+        res.status(200).send({ success: true, message: 'Settings saved successfully!' });
+    } catch (err) {
+        console.error(err.message);
+        res.status(400).send({ success: false, message: err.message });
+    }
+};
+
+
 module.exports = {
     login,
     blogSetupSave,
@@ -106,4 +178,9 @@ module.exports = {
     createPostForm,
     createPost,
     uploadPostImage,
+    deletePost,
+    editPostForm,
+    updatePost,
+    settings,
+    saveSettings,
 }

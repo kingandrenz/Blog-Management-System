@@ -1,0 +1,36 @@
+<%- include('../partials/admin-header') %>
+<%- include('../partials/admin-nav') %>
+
+<div id="content" class="p-4 p-md-5 pt-5">
+    <h2 class="mb-4">Settings</h2>
+    
+    <form id="setting-form">
+        <input placeholder="please enter post limit" type="text" name="postLimit" value="<%= limit %>" class="mb-3 w-50">
+        <input type="submit" value="Save Settings" class="btn btn-info">
+    </form>
+    <p class="result" style="color: green;"></p>
+</div>
+
+
+<script>
+    $(document).ready(function(){
+        $('#setting-form').submit(function(e){
+            e.preventDefault();
+            
+            let formData = $(this).serialize();
+
+            $.ajax({
+                url: '/admin/settings',
+                type: 'POST',
+                data: formData,
+                success: function(response){
+                    $('.result').text(response.message);
+                },
+                
+            })
+        })
+    
+    })
+</script>
+
+<%- include('../partials/admin-header') %>

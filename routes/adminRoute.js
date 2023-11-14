@@ -48,4 +48,12 @@ admin_route.post('/create-post', adminLoginAuth.isLogin, admin_controller.create
 
 admin_route.post('/upload-post-image', adminLoginAuth.isLogin, upload.single('image'), admin_controller.uploadPostImage);
 
+admin_route.post('/delete-post', adminLoginAuth.isLogin, admin_controller.deletePost);
+
+admin_route.get('/edit-post/:id', adminLoginAuth.isLogin, admin_controller.editPostForm);
+admin_route.post('/update-post', adminLoginAuth.isLogin, admin_controller.updatePost);
+
+admin_route.get('/admin/settings', adminLoginAuth.isLogin, admin_controller.settings);
+admin_route.post('/admin/settings', adminLoginAuth.isLogin, admin_controller.saveSettings);
+
 module.exports = admin_route;

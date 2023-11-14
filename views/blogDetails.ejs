@@ -46,7 +46,9 @@
                         </form>
 
                         <p class="com-status" style="color: green;"></p>
+
                         <!-- Comment with nested comments-->
+                        <div id="comment-section">
                         <% if (Array.isArray(blog.comments) && blog.comments.length > 0) { %>
                             <% blog.comments = blog.comments.reverse(); %>
                             <% blog.comments.forEach(comment => { %>
@@ -55,6 +57,9 @@
                                     <div class="ms-3 mt-3">
                                         <div class="fw-bold"><%= comment.username %></div>
                                         <%= comment.comment %>
+
+                                        //reply section
+                                        <div id="replies-<%= comment._id %>">
                                         <% if (Array.isArray(comment.replies) && comment.replies.length > 0) { %>
                                             <% comment.replies.forEach(reply => { %>
                                                 <div class="d-flex mt-3 mb-3">
@@ -66,6 +71,7 @@
                                                 </div>
                                             <% }); %>
                                         <% } %>
+                                        </div>
                                         
                                         <div class="col-md-12">
                                             <form class="do-reply">
@@ -85,6 +91,7 @@
                                 </div>
                             <% }); %>
                         <% } %>
+                        </div>
                         
 
 
@@ -111,6 +118,8 @@
 
 <script>
     $(document).ready(function() {
+        let socket = io();
+
         $('#comment-form').submit(function(e) {
             e.preventDefault();
             let username = $('input[name="username"]').val();
@@ -118,12 +127,19 @@
             let blogId = '<%= blog._id %>';
             // we can also use the serialize method to get the form data or the manual method below
             //serialize the form data
-            const formData = $(this).serialize();
+            const formData = {};
+            $.each($(this).serializeArray(), function(i, field) {
+                formData[field.name] = field.value;
+            });
+
             $.ajax({
                 url: '/comment',
                 method: 'POST',
                 data: formData,
                 success: function(response) {
+                    formData._id = response._id;
+                    socket.emit('new_comment', formData); //emit the event to the server
+
                     $('.com-status').text(response.message);
                     setTimeout(() => {
                         $('.com-status').text('');
@@ -147,24 +163,62 @@
                     $('textarea').val('');
                 }
             }) */
+        });
+
+        //listen for the new-comment event from the server
+        //real time comment show
+        socket.on("new_comment", function(comment){
+            let html = '';
+            html += `
+            <div class="d-flex">
+                    <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                    <div class="ms-3 mt-3">
+                        <div class="fw-bold">`+comment.username+`</div>
+                        `+comment.comment+`                 
+                    </div>
+                </div>
+            `;
+            $('#comment-section').prepend(html);
         })
         
         $('.do-reply').submit(function(e) {
             e.preventDefault();
 
-            const formData = $(this).serialize();
+            const formData = {};
+            $.each($(this).serializeArray(), function(i, field) {
+                formData[field.name] = field.value;
+            });
             let obj = $(this);
             $.ajax({
                 url: '/reply',
                 method: 'POST',
                 data: formData,
                 success: function(response) {
+                    formData._id = response._id;
+                    socket.emit('new_reply', formData); //emit the event to the server
                     $(obj)[0].reset();
                     $(obj).parent().parent().append('<p>'+response.message+'</p>');
                 }
-            })
+            });
+        });
+
+        //listen for the new-reply event from the server
+        //real time reply show
+        socket.on("new_reply", function(reply){
+            let html = '';
+            html += `
+            <div class="d-flex mt-3 mb-3">
+                <div class="flex-shrink-0"><img class="rounded-circle" src="https://dummyimage.com/50x50/ced4da/6c757d.jpg" alt="..." /></div>
+                <div class="ms-3">
+                    <div class="fw-bold">`+reply.username+`</div>
+                    `+reply.reply+`
+                </div>
+            </div>
+            `;
+            $('#replies-'+reply.comment_id).append(html);
         })
-    })
+
+    });
 </script>
 
 <%- include('./partials/footer.ejs') %>

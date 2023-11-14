@@ -1,4 +1,5 @@
 const Blog = require("../models/createPostModel");
+const Settings = require("../models/settingsModel");
 const { ObjectId } = require('mongoose').Types;
  //const { ObjectId } = require('mongodb');
 const transporter = require('../nodemailer');
@@ -35,15 +36,24 @@ const config = require('../config/config');
     };
 
 
-const loadBlog = async (req, res) => {
-    try {
-        const blogs = await Blog.find().sort({ createdAt: -1 });
-        res.render("blog", { blogs });
-    } catch (err) {
-        console.log(err);
-    }
-
-};
+    const loadBlog = async (req, res) => {
+        try {
+            const settings = await Settings.findOne({});
+            // let limit = settings ? settings.post_limit : 0; // Check if settings is not null
+            let limit = settings.post_limit;
+            const blogs = await Blog.find().sort({ createdAt: -1 }).limit(limit);
+            res.render("blog", { 
+                blogs,
+                postLimit: limit 
+            });
+        } catch (err) {
+            console.error(err);
+            // Handle the error appropriately, such as sending an error response to the client
+            res.status(500).send({ success: false, message: 'Internal Server Error' });
+        }
+    };
+    
+    
 
 const loadBlogById = async (req, res) => {
     try {
@@ -71,7 +81,7 @@ const postComment = async (req, res) => {
             }
         });
 
-        res.status(200).send({success: true, message: 'Comment posted successfully'});
+        res.status(200).send({success: true, message: 'Comment posted successfully', _id: comment_id });
         //res.redirect(`/blogs/${blog_id}`);
     } catch (err) {
         console.log(err);
@@ -97,10 +107,37 @@ const postReply = async (req, res) => {
         });
 
         sendCommentEmail(req.body.username, req.body.comment_email, req.body.reply, req.body.blog_id);
-        res.status(200).send({ success: true, message: 'Reply posted successfully' });
+        res.status(200).send({ success: true, message: 'Reply posted successfully', _id: reply_id });
 
     } catch (err) {
         console.log(err);
+    }
+}
+
+// const getNextPosts = async (req, res) => {
+//     try {
+        
+//         const limit = settings ? settings.post_limit : 0; // Check if settings is not null
+//         const blogs = await Blog.find().sort({ createdAt: -1 }).skip(parseInt(req.params.start)).limit(parseInt(req.params.limit));
+//         res.send(blogs);
+//     } catch (err) {
+//         console.error(err);
+//         // Handle the error appropriately, such as sending an error response to the client
+//         res.status(500).send({ success: false, message: 'Internal Server Error' });
+//     }
+
+// }
+
+const getNextPosts = async (req, res) => {
+    try {
+        const settings = await Settings.findOne({});
+        // const limit = settings ? settings.post_limit : 0; // Check if settings is not null
+        const blogs = await Blog.find().sort({ createdAt: -1 }).skip(req.params.start).limit(req.params.limit);
+        res.send(blogs);
+    } catch (err) {
+        console.error(err);
+        // Handle the error appropriately, such as sending an error response to the client
+        res.status(500).send({ success: false, message: 'Internal Server Error' });
     }
 }
 
@@ -109,4 +146,5 @@ module.exports = {
     loadBlogById,
     postComment,
     postReply,
+    getNextPosts,
 };
