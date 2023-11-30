@@ -38,7 +38,7 @@
 
 <div class="container mb-3">
     <div class="text-center">
-        <button class="btn btn-info">previous page</button>
+        <button class="btn btn-info" onclick="getPrevious()">previous page</button>
         <button class="btn btn-info" onclick="getNext()">next page</button>
     </div>
 </div>
@@ -53,7 +53,23 @@
         console.log("Next button clicked");
         start += limit;
         $.ajax({
-            url: "/getNext-posts/"+start+"/"+limit,
+            url: "/get-posts/"+start+"/"+limit,
+            type: "GET",
+            success: function(data) {
+                // console.log(data);
+                renderPost(data);
+               
+            }
+        });
+
+    };
+
+    function getPrevious()
+    {
+        console.log("Previous button clicked");
+        start -= limit;
+        $.ajax({
+            url: "/get-posts/"+start+"/"+limit,
             type: "GET",
             success: function(data) {
                 // console.log(data);
@@ -87,7 +103,7 @@
                     </div>`;
         });
 
-        $('.posts').html(html);
+        $('.posts').html(html); // posts is the class name of the div tag above titled "Page Content"
     }
 }
 

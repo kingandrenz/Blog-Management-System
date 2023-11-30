@@ -22,6 +22,6 @@ blog_route.get('/blogs/:id', blogController.loadBlogById);
 blog_route.post('/comment', blogController.postComment);
 blog_route.post('/reply', blogController.postReply);
 
-blog_route.get('/getNext-posts/:start/:limit', blogController.getNextPosts);
+blog_route.get('/get-posts/:start/:limit', blogController.getNextPosts);
 
 module.exports = blog_route;
