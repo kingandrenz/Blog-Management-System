@@ -2,6 +2,8 @@ const express = require('express');
 const mongoose = require('mongoose');
 const morgan = require('morgan');
 const isBlog = require("./middlewares/isBlog");
+const Blog = require('./models/createPostModel'); // for view Count
+const { ObjectId } = require('mongoose').Types; // for view Count
 let http = require('http');
 let { Server } = require('socket.io');
 
@@ -65,6 +67,20 @@ socket.on("new_reply", (reply) => {
 socket.on("deletePost", (postId) => {
   // console.log(postId);
   socket.broadcast.emit("deletePost", postId);
+});
+
+socket.on("increase_views", async (postId) => {
+  // console.log(postId);
+  try {
+    let data = await Blog.findOneAndUpdate({ _id: postId }, {
+      $inc: { views: 1 }
+    }, 
+    { new: true });
+    socket.broadcast.emit("increase_views", data);
+    // Handle the updated data here
+  } catch (error) {
+    console.log(error);
+  }
 });
 
 });

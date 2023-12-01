@@ -15,6 +15,7 @@
                 <th>Image</th>
                 <th>Edit</th>
                 <th>Delete</th>
+                <th>Views</th>
               </tr>
             </thead>
             <tbody>
@@ -27,6 +28,7 @@
                     <td><img src="<%= post.image %>" alt="<%= post.image %>" width="100px" ></td>
                     <td><a class="btn btn-warning" href="/edit-post/<%= post._id %>">Edit</a></td>
                     <td><a class="btn btn-danger deletePost" href="#" data-id="<%= post.id %>">Delete</a></td>
+                    <td><span><i style="font-size:20px" class="fad fa">&#xf06e;</i> <%= post.views %></span></td>
                   </tr>
                 <% }) %>
               <% } else { %>
